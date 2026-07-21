@@ -115,11 +115,32 @@ export const authController = {
 
   async googleAuth(req: Request, res: Response) {
     try {
-      const { email, name, photo } = req.body;
+      const { access_token, role } = req.body;
 
-      if (!email) {
-        return sendError(res, 'Email is required', 400);
+      if (!access_token) {
+        return sendError(res, 'Google access token is required', 400);
       }
+
+      const tokenRes = await fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${access_token}`);
+      if (!tokenRes.ok) {
+        return sendError(res, 'Invalid Google access token', 401);
+      }
+      const tokenInfo = await tokenRes.json();
+
+      const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${access_token}` },
+      });
+      if (!userInfoRes.ok) {
+        return sendError(res, 'Failed to get Google user info', 401);
+      }
+      const userInfo: any = await userInfoRes.json();
+
+      const email = userInfo.email;
+      if (!email) {
+        return sendError(res, 'Email not available from Google', 400);
+      }
+      const name = userInfo.name || email.split('@')[0];
+      const photo = userInfo.picture || '';
 
       let user = await User.findOne({ email: email.toLowerCase() });
 
@@ -135,7 +156,6 @@ export const authController = {
         return sendSuccess(res, { token, user: { ...user.toObject(), password: undefined } }, 'Login successful');
       }
 
-      const { role } = req.body;
       if (!role || !['supporter', 'creator'].includes(role)) {
         return sendError(res, 'Please select a role: supporter or creator', 400);
       }
@@ -144,7 +164,7 @@ export const authController = {
       user = await User.create({
         name,
         email: email.toLowerCase(),
-        photo: photo || '',
+        photo,
         role,
         credits,
         provider: 'google',

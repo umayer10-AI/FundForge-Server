@@ -1,0 +1,1 @@
+{"version":3,"file":"CreditTransaction.d.ts","sourceRoot":"","sources":["../../src/models/CreditTransaction.ts"],"names":[],"mappings":"AAAA,OAAO,QAAQ,EAAE,EAAU,QAAQ,EAAE,MAAM,UAAU,CAAC;AACtD,OAAO,EAAE,kBAAkB,EAAE,MAAM,UAAU,CAAC;AAE9C,MAAM,WAAW,yBAA0B,SAAQ,IAAI,CAAC,kBAAkB,EAAE,KAAK,CAAC,EAAE,QAAQ;CAAG;AAmB/F,eAAO,MAAM,iBAAiB;;;;OAA0F,CAAC"}
