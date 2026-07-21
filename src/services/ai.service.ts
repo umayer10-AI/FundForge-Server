@@ -35,7 +35,7 @@ export const aiService = {
 
     try {
       if (!config.grok.apiKey) {
-        logger.warn('Grok API key not configured');
+        logger.warn('Groq API key not configured');
         return { success: false, message: 'AI service not configured', data: null };
       }
 
@@ -46,7 +46,7 @@ export const aiService = {
           'Authorization': `Bearer ${config.grok.apiKey}`,
         },
         body: JSON.stringify({
-          model: 'mixtral-8x7b-32768',
+          model: 'llama-3.3-70b-versatile',
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: fullPrompt },
